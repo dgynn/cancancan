@@ -4,7 +4,7 @@ module CanCan
   # helpful methods to determine permission checking and conditions hash generation.
   class Rule # :nodoc:
     attr_reader :base_behavior, :subjects, :actions, :conditions
-    attr_writer :expanded_actions
+    attr_accessor :expanded_actions
 
     EMPTY_CONDITIONS = {}.freeze
 

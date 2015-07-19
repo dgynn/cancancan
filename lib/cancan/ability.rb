@@ -341,7 +341,7 @@ module CanCan
     # This does not take into consideration any hash conditions or block statements
     def relevant_rules(action, subject)
       relevant = rules.select do |rule|
-        rule.expanded_actions = expand_actions(rule.actions)
+        rule.expanded_actions ||= expand_actions(rule.actions)
         rule.relevant? action, subject
       end
       relevant.reverse!
