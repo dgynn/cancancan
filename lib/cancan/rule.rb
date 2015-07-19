@@ -95,7 +95,13 @@ module CanCan
     end
 
     def matches_subject_class?(subject)
-      @subjects.any? { |sub| sub.kind_of?(Module) && (subject.kind_of?(sub) || subject.class.to_s == sub.to_s || subject.kind_of?(Module) && subject.ancestors.include?(sub)) }
+      # Note: comparing class name strings is only needed to handle the case of
+      # class reloading during development. Ideally this expensive check would
+      # not be needed.
+      @subjects.any? do |sub|
+        sub.kind_of?(Module) &&
+          (subject.kind_of?(Module) ? (sub > subject) : (subject.kind_of?(sub) || subject.class.name == sub.name))
+      end
     end
 
     # Checks if the given subject matches the given conditions hash.
