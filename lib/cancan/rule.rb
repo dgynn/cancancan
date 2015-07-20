@@ -6,17 +6,21 @@ module CanCan
     attr_reader :base_behavior, :subjects, :actions, :conditions
     attr_writer :expanded_actions
 
+    EMPTY_CONDITIONS = {}.freeze
+
     # The first argument when initializing is the base_behavior which is a true/false
     # value. True for "can" and false for "cannot". The next two arguments are the action
     # and subject respectively (such as :read, @project). The third argument is a hash
     # of conditions and the last one is the block passed to the "can" call.
     def initialize(base_behavior, action, subject, conditions, block)
-      raise Error, "You are not able to supply a block with a hash of conditions in #{action} #{subject} ability. Use either one." if conditions.kind_of?(Hash) && !block.nil?
+      raise Error, "You are not able to supply a block with a hash of conditions in #{action} #{subject} ability. Use either one." if conditions && block && conditions.kind_of?(Hash)
       @match_all = action.nil? && subject.nil?
       @base_behavior = base_behavior
-      @actions = [action].flatten
-      @subjects = [subject].flatten
-      @conditions = conditions || {}
+      @actions = [action]
+      @actions.flatten!
+      @subjects = [subject]
+      @subjects.flatten!
+      @conditions = conditions || EMPTY_CONDITIONS
       @block = block
     end
 
@@ -51,7 +55,7 @@ module CanCan
     end
 
     def conditions_empty?
-      @conditions == {} || @conditions.nil?
+      @conditions.is_a?(Hash) && @conditions.empty?
     end
 
     def unmergeable?

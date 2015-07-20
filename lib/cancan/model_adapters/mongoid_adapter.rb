@@ -37,7 +37,7 @@ module CanCan
             if process_can_rules && rule.base_behavior
               records.or rule.conditions
             elsif !rule.base_behavior
-              records.excludes rule.conditions
+              records.excludes rule.conditions.dup
             else
               records
             end
