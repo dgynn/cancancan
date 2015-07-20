@@ -61,13 +61,15 @@ module CanCan
     #
     # Also see the RSpec Matchers to aid in testing.
     def can?(action, subject, *extra_args)
-      subject = extract_subjects(subject)
+      subjects = extract_subjects(subject)
 
-      match = subject.map do |subject|
-        relevant_rules_for_match(action, subject).detect do |rule|
+      match = nil
+      subjects.each do |subject|
+        match = relevant_rules_for_match(action, subject).detect do |rule|
           rule.matches_conditions?(action, subject, extra_args)
         end
-      end.compact.first
+        break if match
+      end
 
       match ? match.base_behavior : false
     end
