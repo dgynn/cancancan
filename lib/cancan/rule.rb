@@ -26,8 +26,8 @@ module CanCan
 
     # Matches both the subject and action, not necessarily the conditions
     def relevant?(action, subject)
-      subject = subject.values.first if subject.class == Hash
-      @match_all || (matches_action?(action) && matches_subject?(subject))
+      @match_all || (matches_action?(action) &&
+                     matches_subject?(subject.class == Hash ? subject.values.first : subject))
     end
 
     # Matches the block or conditions hash
